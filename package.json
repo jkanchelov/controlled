@@ -25,7 +25,7 @@
         "build:watch": "tsc -w",
         "start": "node dist/index.js",
         "start:watch": "npx nodemon dist/index.js",
-        "debug": "npx npm-run-all -p build:watch watch"
+        "debug": "npx npm-run-all -p build:watch start:watch"
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
