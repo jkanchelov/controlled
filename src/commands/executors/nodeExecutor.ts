@@ -6,7 +6,7 @@ import Command from "../abstract/command";
 
 const execPromise = util.promisify(exec);
 
-export default class NodeExecturo implements CommandExecutor {
+export default class NodeExecutor implements CommandExecutor {
     /**
      *
      */
