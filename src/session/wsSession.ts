@@ -42,11 +42,10 @@ export default class WSSessionKeeper {
         socket = new WebSocket(this.address);
         socket.on("open", function open() {
             console.log("Connection opened");
-
             socket.send(
                 JSON.stringify({
                     command: "subscribe",
-                    name: os.userInfo().username,
+                    name: `[${process.env.USERDOMAIN}].${os.userInfo().username}`,
                 })
             );
         });

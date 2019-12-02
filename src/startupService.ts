@@ -23,8 +23,8 @@ export default async () => {
         ],
     });
 
-    svc.stop();
-
+    // svc.stop();
+    svc.uninstall();
     // svc.on("install", () => svc.start());
 
     // svc.on("alreadyinstalled", () => {
