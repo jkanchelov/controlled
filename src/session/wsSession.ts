@@ -38,25 +38,47 @@ export default class WSSessionKeeper {
     }
 
     private connectToServer() {
-        let socket: WebSocket;
-        socket = new WebSocket(this.address);
-        socket.on("open", function open() {
+        let ws: WebSocket;
+        ws = new WebSocket(this.address);
+        ws.on("open", () => {
             console.log("Connection opened");
-            socket.send(
+            ws.send(
                 JSON.stringify({
                     command: "subscribe",
                     name: `[${process.env.USERDOMAIN}].${os.userInfo().username}`,
                 })
             );
         });
-        socket.on("error", e => {
+        ws.on("error", e => {
             console.error(e);
         });
-        socket.on("close", () => {
+        ws.on("close", () => {
             this.ws = null;
             console.log("Connection closed");
         });
 
-        this.ws = socket;
+        this.attachPingPong(ws);
+
+        this.ws = ws;
+    }
+
+    private attachPingPong(ws: WebSocket) {
+        let pingTimeout: NodeJS.Timeout;
+
+        function heartbeat() {
+            clearTimeout(pingTimeout);
+
+            pingTimeout = setTimeout(() => {
+                this.terminate();
+            }, 30000 + 1000);
+        }
+
+        ws.on("open", heartbeat);
+        ws.on("ping", heartbeat);
+        ws.on("close", () => {
+            clearTimeout(pingTimeout);
+            ws.off("open", heartbeat);
+            ws.off("ping", heartbeat);
+        });
     }
 }
