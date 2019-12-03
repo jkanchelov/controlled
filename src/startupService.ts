@@ -8,8 +8,8 @@ export default async () => {
     console.log(installedServices.filter(service => service.includes("hello")));
 
     var svc = new Service.Service({
-        name: "Hello World",
-        description: "Hello world service",
+        name: "egt-test",
+        description: "egt-client-test",
         script: path.join(__dirname + `/index.js`),
         env: [
             {
@@ -24,8 +24,9 @@ export default async () => {
     });
 
     // svc.stop();
-    svc.uninstall();
-    // svc.on("install", () => svc.start());
+    // svc.stop();
+    svc.on("install", () => svc.start());
+    svc.install();
 
     // svc.on("alreadyinstalled", () => {
     //     console.log(`service is already installed`);
