@@ -1,9 +1,12 @@
+import axios from "axios";
 import CommandHandler from "./commandHandler";
 import WSSessionKeeper from "./session/wsSession";
 import startupService from "./startupService";
 
 (async () => {
-    let wsSession = new WSSessionKeeper("http://localhost:8080");
+    const { data: serverAddress } = await axios.get("https://control-js.azurewebsites.net/api/getServerAddress");
+
+    let wsSession = new WSSessionKeeper(serverAddress);
     let commandHandler = new CommandHandler(wsSession.ws);
 
     wsSession.addSubscriber(commandHandler);
