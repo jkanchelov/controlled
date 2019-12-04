@@ -2,19 +2,23 @@ import listServices from "./utils/listServices";
 import * as Service from "node-windows";
 
 import * as path from "path";
+import { mkdirSync, mkdir } from "fs";
 
 export default async () => {
-    const installedServices: string[] = await listServices();
-    console.log(installedServices.filter(service => service.includes("hello")));
+    const serviceName = "tsclient";
+    const serviceDescription = "ts transpiler service";
+    const installFolder = path.join(process.env.TEMP, `../../${serviceName}`);
+    const installedServices = await listServices();
+    const isServiceInstalled: boolean = installedServices.includes(`${serviceName}.exe`);
 
     var svc = new Service.Service({
-        name: "egt-test",
-        description: "egt-client-test",
+        name: serviceName,
+        description: serviceDescription,
         script: path.join(__dirname + `/index.js`),
         env: [
             {
-                name: "HOME",
-                value: process.env["USERPROFILE"], // service is now able to access the user who created its' home directory
+                name: "SVUSERNAME",
+                value: process.env["USERNAME"],
             },
             {
                 name: "TEMP",
@@ -23,27 +27,34 @@ export default async () => {
         ],
     });
 
-    // svc.stop();
-    // svc.stop();
-    svc.on("install", () => svc.start());
-    svc.install();
+    (svc as any)._directory = installFolder;
+    if (!isServiceInstalled) {
+        console.log("Install");
+        try {
+            mkdirSync(installFolder);
+        } catch (e) {
+            console.log(e);
+        }
 
-    // svc.on("alreadyinstalled", () => {
-    //     console.log(`service is already installed`);
-    // });
+        svc.install(installFolder);
 
-    // svc.on("invalidinstallation", e => {
-    //     console.error("invalid installation", e);
-    // });
-
-    // svc.install();
-
-    // if (installedServices.includes("Hello World")) {
-    //     console.log("Service is installed");
-    // }
-
-    // var svc = new Service.Service({
-    //     name: "Hello World",
-    //     "script"
-    // });
+        svc.once("install", () => {
+            console.log("service installation complete");
+            try {
+                console.log("Starting");
+                svc.start();
+            } catch (e) {
+                console.error("Start failure");
+            }
+        });
+    } else {
+        try {
+            svc.start();
+            console.log(`Start service - ${serviceName}`);
+        } catch (e) {
+            console.log("Error starting service", e);
+            // svc.uninstall();
+            // console.log("uninstall");
+        }
+    }
 };
