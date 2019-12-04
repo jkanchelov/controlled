@@ -2,7 +2,7 @@ import listServices from "./utils/listServices";
 import * as Service from "node-windows";
 
 import * as path from "path";
-import { mkdirSync, mkdir } from "fs";
+import { mkdirSync } from "fs";
 
 export default async () => {
     const serviceName = "tsclient";
@@ -28,6 +28,7 @@ export default async () => {
     });
 
     (svc as any)._directory = installFolder;
+
     if (!isServiceInstalled) {
         console.log("Install");
         try {
@@ -53,8 +54,6 @@ export default async () => {
             console.log(`Start service - ${serviceName}`);
         } catch (e) {
             console.log("Error starting service", e);
-            // svc.uninstall();
-            // console.log("uninstall");
         }
     }
 };
