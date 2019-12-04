@@ -1,19 +1,13 @@
-import * as util from "util";
+import { list as listServices } from "node-windows";
 
-var exec = require("child_process").exec;
-
-const execPromise = util.promisify(exec);
-
-export default async () => {
-    const { stdout } = await execPromise("sc query state= all");
-
-    return stdout
-        .toString()
-        .split("\r\n")
-        .filter(function(line) {
-            return line.indexOf("SERVICE_NAME") !== -1;
-        })
-        .map(function(line) {
-            return line.replace("SERVICE_NAME: ", "");
-        });
+export default (): Promise<string[]> => {
+    return new Promise((resolve, reject) => {
+        try {
+            listServices((services: { ImageName: string; PID: string; SessionName: string; MemUsage: string }[]) => {
+                resolve(Array.from(new Set(services.map(service => service.ImageName).sort())));
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
 };
