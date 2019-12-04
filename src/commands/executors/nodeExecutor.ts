@@ -18,12 +18,12 @@ export default class NodeExecutor implements CommandExecutor {
         this.options = command.commandOptions;
     }
 
-    async execute(): Promise<{
+    execute(): Promise<{
         stdout: string;
         stderr: string;
     }> {
         try {
-            return await execPromise(`node -e "${this.command}"`, this.options);
+            return execPromise(`node -e "${this.command}"`, this.options);
         } catch (e) {
             throw e;
         }
