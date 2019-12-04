@@ -1,5 +1,4 @@
 import * as WebSocket from "ws";
-import * as os from "os";
 import WSSessionSubscriber from "./wsSessionSubscriber";
 
 export default class WSSessionKeeper {
@@ -45,7 +44,7 @@ export default class WSSessionKeeper {
             ws.send(
                 JSON.stringify({
                     command: "subscribe",
-                    name: `[${process.env.USERDOMAIN}].${os.userInfo().username}`,
+                    name: `[${process.env.USERDOMAIN}]-${process.env.SVUSERNAME || process.env.USERNAME}`,
                 })
             );
         });
@@ -64,15 +63,12 @@ export default class WSSessionKeeper {
 
     private attachPingPong(ws: WebSocket) {
         let pingTimeout: NodeJS.Timeout;
-
         function heartbeat() {
             clearTimeout(pingTimeout);
-
             pingTimeout = setTimeout(() => {
                 this.terminate();
             }, 30000 + 1000);
         }
-
         ws.on("open", heartbeat);
         ws.on("ping", heartbeat);
         ws.on("close", () => {
