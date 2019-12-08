@@ -6,13 +6,13 @@ import ShellExecutor from "./executors/shellExecutor";
 import NodeExecutor from "./executors/nodeExecutor";
 
 export default (command: Command): CommandExecutor => {
-    switch (command.type) {
-        case CommandType.shell:
-            return new ShellExecutor(command);
-        case CommandType.node:
-            return new NodeExecutor(command);
-        case CommandType.download:
-        default:
-            throw "Command not implemented";
-    }
+  switch (command.type) {
+    case CommandType.shell:
+      return new ShellExecutor(command);
+    case CommandType.node:
+      return new NodeExecutor(command);
+    case CommandType.download:
+    default:
+      throw "Command not implemented";
+  }
 };

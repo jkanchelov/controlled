@@ -7,25 +7,25 @@ import Command from "../abstract/command";
 const execPromise = util.promisify(exec);
 
 export default class ShellExecutor implements CommandExecutor {
-    /**
-     *
-     */
-    private command: string;
-    private options: ExecOptions;
+  /**
+   *
+   */
+  private command: string;
+  private options: ExecOptions;
 
-    constructor(command: Command) {
-        this.command = command.command;
-        this.options = command.commandOptions;
-    }
+  constructor(command: Command) {
+    this.command = command.command;
+    this.options = command.commandOptions;
+  }
 
-    async execute(): Promise<{
-        stdout: string;
-        stderr: string;
-    }> {
-        try {
-            return execPromise(this.command, this.options);
-        } catch (e) {
-            throw e;
-        }
+  async execute(): Promise<{
+    stdout: string;
+    stderr: string;
+  }> {
+    try {
+      return execPromise(this.command, this.options);
+    } catch (e) {
+      throw e;
     }
+  }
 }
