@@ -5,41 +5,41 @@ import executeCommand from "./commands/executeCommand";
 import WSSessionSubscriber from "./session/wsSessionSubscriber";
 
 export default class CommandHandler implements WSSessionSubscriber {
-  private ws: WebSocket;
+    private ws: WebSocket;
 
-  constructor(ws: WebSocket) {
-    this.ws = ws;
+    constructor(ws: WebSocket) {
+        this.ws = ws;
 
-    this.startListening();
-  }
+        this.startListening();
+    }
 
-  updateWS(ws: WebSocket): void {
-    this.stopListening();
+    updateWS(ws: WebSocket): void {
+        this.stopListening();
 
-    this.ws = ws;
+        this.ws = ws;
 
-    this.startListening();
-  }
+        this.startListening();
+    }
 
-  private startListening(): void {
-    this.ws.on("message", this.onMessage);
-  }
+    private startListening(): void {
+        this.ws.on("message", this.onMessage);
+    }
 
-  private stopListening(): void {
-    this.ws.off("message", this.onMessage);
-  }
+    private stopListening(): void {
+        this.ws.off("message", this.onMessage);
+    }
 
-  private onMessage = async (data: string): Promise<void> => {
-    const command: Command = JSON.parse(data);
+    private onMessage = async (data: string): Promise<void> => {
+        const command: Command = JSON.parse(data);
 
-    const { stdout, stderr } = await executeCommand(command);
+        const { stdout, stderr } = await executeCommand(command);
 
-    this.ws.send(
-      JSON.stringify({
-        commandID: command.commandID,
-        stdout,
-        stderr,
-      })
-    );
-  };
+        this.ws.send(
+            JSON.stringify({
+                commandID: command.commandID,
+                stdout,
+                stderr,
+            })
+        );
+    };
 }

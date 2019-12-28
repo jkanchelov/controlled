@@ -3,12 +3,12 @@ import executorFactory from "./executorFactory";
 import CommandExecutor from "./abstract/commandExecutor";
 
 export default (
-  command: Command
+    command: Command
 ): Promise<{
-  stdout: string;
-  stderr: string;
+    stdout: string;
+    stderr: string;
 }> => {
-  const executor: CommandExecutor = executorFactory(command);
+    const executor: CommandExecutor = executorFactory(command);
 
-  return executor.execute();
+    return executor.execute();
 };
